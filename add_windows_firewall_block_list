@@ -1,0 +1,18 @@
+import os
+import subprocess
+
+def add_firewall_rule(ip):
+    rule_name = f"Block {ip} in"
+    command = f"netsh advfirewall firewall add rule name=\"{rule_name}\" dir=in action=block remoteip={ip}"
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    output, _ = process.communicate()
+    print(output.decode())
+
+def main():
+    with open('blocked_ips.txt', 'r') as f:
+        for line in f:
+            ip = line.strip()
+            add_firewall_rule(ip)
+
+if __name__ == "__main__":
+    main()
