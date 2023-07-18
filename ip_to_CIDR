@@ -1,0 +1,41 @@
+import re
+from netaddr import IPRange
+from typing import List, Tuple
+
+# 测试用例
+input_str = '''110.96.0.0110.127.255.255
+111.128.0.0111.159.255.255
+101.144.0.0101.159.255.255
+'''
+
+
+def insert_space_after_zero(input_str: str) -> str:
+    output_str = re.sub(r"(\.0)(\d)", r"\1 \2", input_str)
+    return output_str
+
+
+
+text =insert_space_after_zero(input_str)
+# print(text)
+processed_text = ["('"+line.replace(" ", "', '")+"')," for line in text.split("\n") if line]
+
+# 将处理后的文本合并为一个字符串
+result = "\n".join(processed_text)
+while '\n' in result:
+    result = result.replace('''\n''','')
+result = result[:-1]
+print(result)
+
+
+def convert_ip_range_to_cidr(ip_ranges: List[Tuple[str, str]]) -> List[str]:
+    cidrs = []
+    for ip_range in ip_ranges:
+        start_ip, end_ip = ip_range
+        ip_range = IPRange(start_ip, end_ip)
+        cidrs.extend([str(cidr) for cidr in ip_range.cidrs()])
+    return cidrs
+
+# 测试用例
+ip_ranges = eval('['+result+']')
+[print(i) for i in convert_ip_range_to_cidr(ip_ranges)]
+
